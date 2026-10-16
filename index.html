@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farouq Okeniyi, Full Stack Engineer in Lagos</title>
+    <meta
+      name="description"
+      content="Farouq Okeniyi is a full stack engineer in Lagos. He builds backend-heavy web products with Node, TypeScript, NestJS, Spring Boot, .NET and React."
+    />
+    <meta name="theme-color" content="#171B33" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Pixelify+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Retro Sci-Fi Mission Loader -->
+    <div id="mission-loader" class="mission-loader" role="status" aria-live="polite">
+      <div class="loader-terminal">
+        <div class="loader-header">
+          <div class="terminal-dots" aria-hidden="true">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <span class="loader-title">ORBITAL EXPEDITION LOG // VOXEL SITE-01</span>
+          <span class="loader-coord">SYS.LOC: LAGOS / 6.5244° N</span>
+        </div>
+        <div class="loader-body">
+          <div class="loader-manifest">
+            <div class="manifest-row"><span class="label">> OPERATOR:</span> <span class="val">FAROUQ OKENIYI (FULL STACK)</span></div>
+            <div class="manifest-row"><span class="label">> AFFILIATION:</span> <span class="val">KPMG NIGERIA // DIGITAL FACTORY</span></div>
+            <div class="manifest-row"><span class="label">> OBJECTIVE:</span> <span class="val">SUBTERRANEAN VOXEL CORE DESCENT (-60M)</span></div>
+          </div>
+          <div class="loader-console" id="loader-console" aria-hidden="true">
+            <div class="log-line">> Establishing secure ion downlink... [OK]</div>
+            <div class="log-line">> Generating 2.5D orthographic voxel terrain matrix... [OK]</div>
+            <div class="log-line">> Calibrating landing thrusters, robot sensors & EVA gear... [OK]</div>
+            <div class="log-line">> Atmospheric telemetry confirmed. Trajectory locked.</div>
+          </div>
+          <div class="loader-progress-area">
+            <div class="loader-progress-track">
+              <div id="loader-bar" class="loader-progress-fill"></div>
+            </div>
+            <div class="loader-pct-row">
+              <span id="loader-status" class="loader-status-text">CALIBRATING ORBITAL SYSTEMS...</span>
+              <span id="loader-percent" class="loader-percent">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <canvas id="world" aria-hidden="true"></canvas>
+    <div class="fallback-ground" aria-hidden="true"></div>
+
+    <nav id="depth-gauge" class="gauge" aria-label="Depth gauge">
+      <p id="gauge-depth" class="gauge-depth">Depth 0 m</p>
+      <ol class="gauge-list">
+        <li><a href="#surface" data-layer="surface"><span class="gauge-mark"></span><span class="gauge-label">Surface</span></a></li>
+        <li><a href="#topsoil" data-layer="topsoil"><span class="gauge-mark"></span><span class="gauge-label">Topsoil</span></a></li>
+        <li><a href="#stone" data-layer="stone"><span class="gauge-mark"></span><span class="gauge-label">Stone</span></a></li>
+        <li><a href="#shaft" data-layer="shaft"><span class="gauge-mark"></span><span class="gauge-label">Shaft</span></a></li>
+        <li><a href="#deep" data-layer="deep"><span class="gauge-mark"></span><span class="gauge-label">Deep rock</span></a></li>
+        <li><a href="#core" data-layer="core"><span class="gauge-mark"></span><span class="gauge-label">Core</span></a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <section id="surface" class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <h1 id="hero-title">Farouq Okeniyi</h1>
+          <p class="hero-role">Full Stack Engineer, Lagos</p>
+          <p class="hero-pitch">
+            I build web products from the database up, mostly in Node and TypeScript, NestJS, Spring Boot
+            and .NET, with React on the front end. I work on the Digital Factory team at KPMG Nigeria.
+          </p>
+          <div class="hero-actions">
+            <a id="cv-link" class="btn btn-key" href="/Farouq_Okeniyi_CV.pdf" download>Download my CV</a>
+            <a id="projects-link" class="btn" href="#stone">See the projects</a>
+            <button id="replay-btn" type="button" class="btn" title="Replay launch and landing descent">↺ Replay Mission</button>
+          </div>
+        </div>
+        <div id="mission-hud" class="mission-hud" aria-hidden="true">
+          <div class="hud-status">MISSION STATUS: <span id="hud-phase">ORBITAL DEPARTURE</span></div>
+          <div class="hud-progress"><div id="hud-bar" class="hud-bar"></div></div>
+          <button id="skip-btn" class="skip-hint" type="button">Skip Intro [Space / Click]</button>
+        </div>
+      </section>
+
+      <!-- Topsoil: About -->
+      <section id="topsoil" class="layer layer-left" aria-labelledby="topsoil-title">
+        <div class="panel">
+          <h2 id="topsoil-title">Topsoil / About</h2>
+          <p class="panel-lede">
+            I build systems from the data models and network layer upwards. My primary focus is high-performance, robust server engineering paired with responsive, tactile interfaces.
+          </p>
+          <div class="dirt-decor" aria-hidden="true">
+            <span class="fossil">🦴 [Ancient Fossil Fragment]</span>
+            <span class="root">🌱 Root network</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stone strata: Projects (Ore blocks) -->
+      <section id="stone" class="layer layer-right" aria-labelledby="stone-title">
+        <div class="panel">
+          <h2 id="stone-title">Stone Strata / Projects</h2>
+          <p class="panel-lede">Rich ore veins embedded in the bedrock. Mine a block to inspect the architecture:</p>
+          <div class="ore-grid">
+            <article class="ore-card" data-ore="booktalk">
+              <div class="ore-badge">◆ Amber Ore</div>
+              <h3>BookTalk</h3>
+              <p>Social reading platform where readers share reflections, bookmark notes, and hold discussions.</p>
+              <div class="ore-tags"><span>React</span><span>Node.js</span><span>PostgreSQL</span></div>
+            </article>
+            <article class="ore-card" data-ore="mailextract">
+              <div class="ore-badge">◆ Ion Crystal</div>
+              <h3>MailExtract</h3>
+              <p>Secure ingestion engine scanning alert emails to extract bank transaction records into ledger data.</p>
+              <div class="ore-tags"><span>TypeScript</span><span>NestJS</span><span>OAuth2</span></div>
+            </article>
+            <article class="ore-card" data-ore="streetfootball">
+              <div class="ore-badge">◆ Amber Ore</div>
+              <h3>Street Football Fantasy</h3>
+              <p>Fantasy league platform designed specifically around grassroots local community tournaments.</p>
+              <div class="ore-tags"><span>React</span><span>Spring Boot</span><span>Redis</span></div>
+            </article>
+            <article class="ore-card" data-ore="ssf">
+              <div class="ore-badge">◆ Rare Strata</div>
+              <h3>Solution Selection Framework</h3>
+              <p>Comparative architectural assessment matrix weighing multi-cloud candidate services against deterministic enterprise criteria.</p>
+              <div class="ore-tags"><span>.NET Core</span><span>React</span><span>Azure</span></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mineshaft: Skills Inventory Hotbar -->
+      <section id="shaft" class="layer layer-left" aria-labelledby="shaft-title">
+        <div class="panel">
+          <h2 id="shaft-title">Mineshaft / Skills Inventory</h2>
+          <p class="panel-lede">Gear and utilities equipped in the active hotbar:</p>
+          
+          <div class="inventory-section">
+            <div class="hotbar-group">
+              <div class="group-title">Backend & Systems</div>
+              <div class="hotbar-slots">
+                <div class="slot" title="Node.js"><span class="slot-item">Node</span><span class="slot-count">99</span></div>
+                <div class="slot" title="TypeScript"><span class="slot-item">TS</span><span class="slot-count">99</span></div>
+                <div class="slot" title="NestJS"><span class="slot-item">Nest</span><span class="slot-count">64</span></div>
+                <div class="slot" title="Spring Boot"><span class="slot-item">Spring</span><span class="slot-count">64</span></div>
+                <div class="slot" title=".NET"><span class="slot-item">.NET</span><span class="slot-count">64</span></div>
+              </div>
+            </div>
+
+            <div class="hotbar-group">
+              <div class="group-title">Frontend & Interactive</div>
+              <div class="hotbar-slots">
+                <div class="slot" title="React"><span class="slot-item">React</span><span class="slot-count">99</span></div>
+                <div class="slot" title="Three.js / WebGL"><span class="slot-item">Three</span><span class="slot-count">32</span></div>
+                <div class="slot" title="GSAP"><span class="slot-item">GSAP</span><span class="slot-count">64</span></div>
+              </div>
+            </div>
+
+            <div class="hotbar-group">
+              <div class="group-title">Data, Security & DevOps</div>
+              <div class="hotbar-slots">
+                <div class="slot" title="PostgreSQL"><span class="slot-item">Postgres</span><span class="slot-count">64</span></div>
+                <div class="slot" title="Redis"><span class="slot-item">Redis</span><span class="slot-count">64</span></div>
+                <div class="slot" title="VAPT Security"><span class="slot-item">VAPT</span><span class="slot-count">16</span></div>
+                <div class="slot" title="Docker / CI"><span class="slot-item">Docker</span><span class="slot-count">32</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Deep Rock: Quest Log (Experience & Education) -->
+      <section id="deep" class="layer layer-right" aria-labelledby="deep-title">
+        <div class="panel">
+          <h2 id="deep-title">Deep Rock / Quest Log</h2>
+          <p class="panel-lede">Expedition timeline carved into the subterranean bedrock:</p>
+          <div class="quest-log">
+            <div class="quest-entry active-quest">
+              <div class="quest-marker">▸ [ACTIVE]</div>
+              <div class="quest-body">
+                <h3>Full Stack Engineer — KPMG Nigeria</h3>
+                <div class="quest-meta">Digital Factory team · Lagos</div>
+                <p>Engineering client-facing software products and internal digital architectures from database design through delivery.</p>
+              </div>
+            </div>
+
+            <div class="quest-entry completed-quest">
+              <div class="quest-marker">✓ [COMPLETED]</div>
+              <div class="quest-body">
+                <h3>B.Sc. Computer Science — University of Ilorin</h3>
+                <div class="quest-meta">Second Class Upper · 2020 — 2025</div>
+                <p>Advanced algorithmic foundations, software engineering practices, distributed systems and computing architecture.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Core: Contact Beacon -->
+      <section id="core" class="layer layer-left" aria-labelledby="core-title">
+        <div class="panel beacon-panel">
+          <h2 id="core-title">Planetary Core / Signal Beacon</h2>
+          <p class="panel-lede">You have reached the core (-60m). Emit an ion transmission directly to establish contact:</p>
+          
+          <div class="beacon-cta">
+            <a id="beacon-send" class="btn btn-key beacon-btn" href="mailto:farouqokeniyi2004@gmail.com">⚡ Send an ion transmission</a>
+            <div class="beacon-options">
+              <a id="beacon-webmail" class="btn beacon-sub-btn" href="https://mail.google.com/mail/?view=cm&fs=1&to=farouqokeniyi2004@gmail.com" target="_blank" rel="noopener noreferrer">Compose in Web Gmail ↗</a>
+              <button id="beacon-copy" type="button" class="btn beacon-sub-btn" title="Copy email address to clipboard">📋 Copy: farouqokeniyi2004@gmail.com</button>
+            </div>
+            <p id="beacon-toast" class="beacon-toast" hidden></p>
+          </div>
+
+          <div class="beacon-links">
+            <a href="https://github.com/Farouq-okeniyi" target="_blank" rel="noreferrer" class="btn">GitHub ↗</a>
+            <a href="https://www.linkedin.com/in/farouq-okeniyi-306443295/" target="_blank" rel="noreferrer" class="btn">LinkedIn ↗</a>
+            <a href="/Farouq_Okeniyi_CV.pdf" download class="btn">Download CV</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Project Detail Mineral Inspection Modal -->
+      <dialog id="project-modal" class="project-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span id="modal-badge" class="ore-badge">◆ Mineral Specimen</span>
+            <button id="modal-close" class="modal-close" aria-label="Close dialog">✕</button>
+          </div>
+          <h2 id="modal-title">Project Title</h2>
+          <p id="modal-desc" class="modal-desc">Project Description</p>
+          <div class="modal-section">
+            <div class="modal-label">Architecture & Stack</div>
+            <div id="modal-tags" class="ore-tags"></div>
+          </div>
+          <div class="modal-actions">
+            <a id="modal-link" href="#" target="_blank" rel="noreferrer" class="btn btn-key">Inspect Repository / Live</a>
+            <button id="modal-dismiss" class="btn">Close Scanner</button>
+          </div>
+        </div>
+      </dialog>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

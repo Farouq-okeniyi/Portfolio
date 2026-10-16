@@ -1,0 +1,1277 @@
+/* Design tokens: six colors only (spec section 2). */
+:root {
+  --void: #171b33;
+  --regolith: #2f3858;
+  --bone: #ede6d3;
+  --ion: #4fd3e6;
+  --ore: #f0b544;
+  --moss: #6fbf6a;
+
+  --font-pixel: 'Pixelify Sans', monospace;
+  --font-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --pad: clamp(16px, 5vw, 80px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-radius: 0;
+}
+
+html {
+  background: var(--void);
+  color: var(--bone);
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  line-height: 1.6;
+  background: var(--void);
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* The 3D world is fixed behind all content and upscaled with hard pixels. */
+#world {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  image-rendering: pixelated;
+}
+
+.fallback-ground {
+  display: none;
+}
+
+/* Used when WebGL is unavailable: a flat static ground strip. */
+.no-webgl #world {
+  display: none;
+}
+.no-webgl .fallback-ground {
+  display: block;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 36vh;
+  background: var(--regolith);
+  border-top: 16px solid var(--moss);
+  z-index: 0;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  overflow-x: hidden;
+}
+
+.hero {
+  min-height: 100svh;
+  padding: clamp(40px, 12svh, 120px) var(--pad) 24px;
+  box-sizing: border-box;
+}
+
+.hero-copy {
+  max-width: 34rem;
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-weight: 600;
+  font-size: clamp(32px, 7vw, 64px);
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.hero-role {
+  margin: 16px 0 0;
+  font-family: var(--font-pixel);
+  font-size: clamp(18px, 4vw, 24px);
+  color: var(--ion);
+}
+
+.hero-pitch {
+  margin: 20px 0 0;
+  max-width: 60ch;
+  font-size: clamp(0.95rem, 3.2vw, 1.125rem);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+/* Buttons: square, thick block edges, hard offset shadow. */
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--bone);
+  text-decoration: none;
+  background: var(--void);
+  border: 4px solid var(--bone);
+  box-shadow: 4px 4px 0 var(--regolith);
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--regolith);
+}
+
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+/* Amber is for rewards and the key call to action only. */
+.btn-key {
+  background: var(--ore);
+  border-color: var(--ore);
+  color: var(--void);
+}
+
+.btn-key:hover {
+  background: var(--bone);
+  border-color: var(--bone);
+}
+
+:focus-visible {
+  outline: 4px solid var(--ion);
+  outline-offset: 4px;
+}
+
+.skip-hint {
+  position: absolute;
+  right: var(--pad);
+  bottom: 24px;
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  color: var(--bone);
+  background: var(--void);
+  padding: 4px 8px;
+  border: 2px solid var(--bone);
+}
+
+.skip-hint[hidden] {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  h1 {
+    font-size: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .skip-hint {
+    display: none;
+  }
+}
+
+/* Intro: scrolling is locked until the opening scene finishes or is skipped. */
+html.intro {
+  overflow: hidden;
+}
+
+/* Depth gauge: the real navigation. Fixed on the right on desktop, left edge on mobile. */
+.gauge {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 5;
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.gauge-depth {
+  margin: 0 0 16px;
+  padding: 4px 8px;
+  background: var(--void);
+  border: 2px solid var(--bone);
+  white-space: nowrap;
+  text-align: right;
+}
+
+.gauge-list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-end;
+}
+
+/* The shaft line the markers sit on. */
+.gauge-list::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  right: 6px;
+  width: 4px;
+  background: var(--regolith);
+}
+
+.gauge-list a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--bone);
+  text-decoration: none;
+}
+
+.gauge-label {
+  padding: 2px 8px;
+  background: var(--void);
+  border: 2px solid var(--bone);
+}
+
+.gauge-mark {
+  width: 16px;
+  height: 16px;
+  background: var(--void);
+  border: 4px solid var(--bone);
+}
+
+.gauge-list a:hover .gauge-mark {
+  background: var(--regolith);
+}
+
+.gauge-list a[aria-current='true'] .gauge-mark {
+  background: var(--ion);
+  border-color: var(--ion);
+}
+
+.gauge-list a[aria-current='true'] .gauge-label {
+  color: var(--ion);
+  border-color: var(--ion);
+}
+
+/* Layers: one panel cut into the terrain per section, alternating sides of the shaft. */
+.layer {
+  min-height: 110svh;
+  display: flex;
+  align-items: center;
+  padding: 40px var(--pad);
+  box-sizing: border-box;
+}
+
+.layer-left {
+  justify-content: flex-start;
+}
+
+.layer-right {
+  justify-content: flex-end;
+  padding-right: clamp(24px, 12vw, 180px);
+}
+
+.panel {
+  width: min(34rem, 100%);
+  max-width: 100%;
+  padding: clamp(18px, 4vw, 32px);
+  background: var(--regolith);
+  border: 4px solid var(--bone);
+  box-shadow: 4px 4px 0 var(--void);
+  box-sizing: border-box;
+}
+
+.panel h2 {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-weight: 600;
+  font-size: clamp(24px, 5vw, 32px);
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+@media (max-width: 860px) {
+  .layer-right {
+    padding-right: var(--pad);
+  }
+}
+
+@media (max-width: 720px) {
+  .gauge {
+    right: auto;
+    left: 8px;
+  }
+  .gauge-label,
+  .gauge-depth {
+    display: none;
+  }
+  .gauge-list {
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .gauge-list::before {
+    right: auto;
+    left: 6px;
+  }
+  .hero {
+    padding: clamp(48px, 10svh, 80px) 16px 24px 44px;
+  }
+  .layer {
+    padding: 32px 14px 32px 44px;
+    justify-content: center !important;
+  }
+  .layer-left,
+  .layer-right {
+    justify-content: center !important;
+    padding-right: 14px !important;
+  }
+  .panel {
+    padding: 18px 14px;
+  }
+}
+
+/* Detailed content styling across all strata layers */
+.panel-lede {
+  margin: 16px 0 20px;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--bone);
+}
+
+/* Topsoil Fossils & Roots */
+.dirt-decor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--void);
+  border: 2px dashed var(--bone);
+  font-family: var(--font-pixel);
+  font-size: 16px;
+}
+
+.fossil {
+  color: var(--ore);
+}
+
+.root {
+  color: var(--moss);
+}
+
+/* Stone Ore Grid */
+.ore-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.ore-card {
+  background: var(--void);
+  border: 3px solid var(--bone);
+  padding: 18px;
+  box-shadow: 4px 4px 0 var(--regolith);
+  cursor: pointer;
+  transition: transform 0.1s ease, border-color 0.1s ease;
+  box-sizing: border-box;
+}
+
+.ore-card:hover {
+  border-color: var(--ore);
+  transform: translateY(-2px);
+}
+
+.ore-badge {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--ore);
+  margin-bottom: 8px;
+}
+
+.ore-card[data-ore="mailextract"] .ore-badge {
+  color: var(--ion);
+}
+
+.ore-card h3 {
+  font-family: var(--font-pixel);
+  font-size: 20px;
+  margin: 0 0 10px;
+  color: var(--bone);
+}
+
+.ore-card p {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--bone);
+  margin: 0 0 14px;
+}
+
+.ore-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ore-tags span {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  padding: 2px 6px;
+  background: var(--regolith);
+  color: var(--bone);
+  border: 1px solid var(--bone);
+}
+
+/* Mineshaft Hotbar Inventory */
+.inventory-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.hotbar-group {
+  background: var(--void);
+  border: 2px solid var(--bone);
+  padding: 14px 18px;
+  box-sizing: border-box;
+}
+
+.group-title {
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  color: var(--ion);
+  margin-bottom: 12px;
+}
+
+.hotbar-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 8px;
+}
+
+.slot {
+  width: 100%;
+  height: 52px;
+  background: var(--regolith);
+  border: 3px solid var(--bone);
+  box-shadow: inset 2px 2px 0 var(--void);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.slot:hover {
+  border-color: var(--ore);
+}
+
+.slot-item {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  color: var(--bone);
+  word-break: break-word;
+  line-height: 1.1;
+}
+
+.slot-count {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--ore);
+  align-self: flex-end;
+}
+
+/* Quest Log Timeline */
+.quest-log {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.quest-entry {
+  display: flex;
+  gap: 14px;
+  background: var(--void);
+  border: 3px solid var(--bone);
+  padding: 16px;
+}
+
+.quest-marker {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--ion);
+  white-space: nowrap;
+}
+
+.completed-quest .quest-marker {
+  color: var(--moss);
+}
+
+.quest-body h3 {
+  font-family: var(--font-pixel);
+  font-size: 18px;
+  margin: 0 0 4px;
+  color: var(--bone);
+}
+
+.quest-meta {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--ore);
+  margin-bottom: 8px;
+}
+
+.quest-body p {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--bone);
+  margin: 0;
+}
+
+/* Core Beacon Section */
+.beacon-panel {
+  border-color: var(--ion);
+}
+
+.beacon-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0 20px;
+}
+
+.beacon-btn {
+  font-size: 18px;
+  padding: 14px 28px;
+  text-align: center;
+}
+
+.beacon-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.beacon-sub-btn {
+  font-size: 13px;
+  padding: 8px 14px;
+  background: var(--void);
+  border: 2px solid var(--ion);
+  color: var(--ion);
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--font-pixel);
+  display: inline-flex;
+  align-items: center;
+  transition: background 0.1s ease, border-color 0.1s ease, color 0.1s ease;
+}
+
+.beacon-sub-btn:hover {
+  background: var(--regolith);
+  border-color: var(--bone);
+  color: var(--bone);
+}
+
+.beacon-toast {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--moss);
+  background: var(--void);
+  border: 2px solid var(--moss);
+  padding: 6px 12px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.beacon-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* Mineral Inspection Modal */
+.project-modal {
+  padding: 0;
+  border: 4px solid var(--ore);
+  background: var(--void);
+  color: var(--bone);
+  box-shadow: 8px 8px 0 var(--regolith);
+  max-width: 580px;
+  width: 90%;
+  margin: auto;
+}
+
+.project-modal::backdrop {
+  background: rgba(23, 27, 51, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  padding: 24px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.modal-close {
+  background: transparent;
+  border: 2px solid var(--bone);
+  color: var(--bone);
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 8px;
+}
+
+.modal-close:hover {
+  background: var(--regolith);
+  border-color: var(--ion);
+}
+
+.modal-content h2 {
+  font-family: var(--font-pixel);
+  font-size: 28px;
+  margin: 0 0 12px;
+  color: var(--bone);
+}
+
+.modal-desc {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  margin: 0 0 20px;
+  color: var(--bone);
+}
+
+.modal-section {
+  margin-bottom: 24px;
+}
+
+.modal-label {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--ion);
+  margin-bottom: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Mission Control HUD */
+.mission-hud {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  transition: opacity 0.3s ease;
+}
+
+.mission-hud[hidden] {
+  display: none;
+}
+
+.hud-status {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--ion);
+  background: var(--void);
+  border: 2px solid var(--ion);
+  padding: 4px 10px;
+  letter-spacing: 0.05em;
+}
+
+.hud-progress {
+  width: 220px;
+  height: 10px;
+  background: var(--regolith);
+  border: 2px solid var(--bone);
+  overflow: hidden;
+}
+
+.hud-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--ore);
+  transition: width 0.1s linear;
+}
+
+.mission-hud .skip-hint {
+  position: static;
+  margin-top: 4px;
+  cursor: pointer;
+  background: var(--void);
+  color: var(--bone);
+  border: 2px solid var(--bone);
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  padding: 4px 10px;
+  transition: background 0.1s ease, border-color 0.1s ease, color 0.1s ease;
+}
+
+.mission-hud .skip-hint:hover {
+  background: var(--regolith);
+  border-color: var(--ion);
+  color: var(--ion);
+}
+
+/* ============================================================
+   Retro Sci-Fi Mission Loader
+   ============================================================ */
+.mission-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--void);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+}
+
+.mission-loader.loaded {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.02);
+  pointer-events: none;
+}
+
+.loader-terminal {
+  max-width: 580px;
+  width: 100%;
+  background: var(--regolith);
+  border: 4px solid var(--bone);
+  box-shadow: 8px 8px 0 var(--void), 0 0 24px rgba(79, 211, 230, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.loader-header {
+  background: var(--void);
+  border-bottom: 3px solid var(--bone);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--bone);
+  gap: 12px;
+}
+
+.terminal-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.terminal-dots .dot {
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--bone);
+}
+
+.terminal-dots .dot.red {
+  background: #d95763;
+}
+
+.terminal-dots .dot.yellow {
+  background: var(--ore);
+}
+
+.terminal-dots .dot.green {
+  background: var(--moss);
+}
+
+.loader-title {
+  color: var(--bone);
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
+}
+
+.loader-coord {
+  color: var(--ion);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.loader-body {
+  padding: 20px;
+  font-family: var(--font-pixel);
+  color: var(--bone);
+}
+
+.loader-manifest {
+  background: var(--void);
+  border: 2px solid var(--bone);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.manifest-row {
+  margin-bottom: 6px;
+}
+
+.manifest-row:last-child {
+  margin-bottom: 0;
+}
+
+.manifest-row .label {
+  color: var(--ion);
+}
+
+.manifest-row .val {
+  color: var(--bone);
+}
+
+.loader-console {
+  background: rgba(23, 27, 51, 0.85);
+  border: 2px dashed var(--bone);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--bone);
+  min-height: 96px;
+}
+
+.loader-console .log-line {
+  margin-bottom: 4px;
+  color: var(--bone);
+}
+
+.loader-console .log-line:last-child {
+  color: var(--ore);
+  margin-bottom: 0;
+}
+
+.loader-progress-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.loader-progress-track {
+  width: 100%;
+  height: 16px;
+  background: var(--void);
+  border: 3px solid var(--bone);
+  overflow: hidden;
+  box-shadow: inset 2px 2px 0 var(--regolith);
+}
+
+.loader-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: var(--ore);
+  transition: width 0.06s linear;
+}
+
+.loader-pct-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.loader-status-text {
+  color: var(--ion);
+  letter-spacing: 0.05em;
+}
+
+.loader-percent {
+  color: var(--ore);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .loader-header {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .loader-coord {
+    display: none;
+  }
+  .loader-title {
+    font-size: 12px;
+  }
+}
+
+/* ============================================================
+   CV Cargo Rocket Launch Animation
+   ============================================================ */
+.rocket-launch-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10000;
+  overflow: hidden;
+}
+
+.cv-rocket {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+  filter: drop-shadow(0 0 10px rgba(79, 211, 230, 0.7));
+}
+
+.rocket-sprite {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rocket-badge {
+  position: absolute;
+  top: 14px;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--bone);
+  background: var(--void);
+  padding: 1px 3px;
+  border: 1px solid var(--ion);
+  pointer-events: none;
+  letter-spacing: 0.05em;
+}
+
+.engine-flame {
+  animation: flameFlicker 0.08s infinite alternate;
+}
+
+@keyframes flameFlicker {
+  0% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1.3) scaleX(1.1); opacity: 0.85; }
+}
+
+.rocket-particle {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 0;
+  box-shadow: 0 0 4px currentColor;
+}
+
+/* Download Target Ping at top-right */
+.download-target-ping {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-pixel);
+  color: var(--ion);
+  pointer-events: none;
+  animation: pingPulse 1s infinite;
+}
+
+.ping-core {
+  width: 32px;
+  height: 32px;
+  background: var(--void);
+  border: 3px solid var(--ion);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--ion);
+  box-shadow: 0 0 12px var(--ion);
+}
+
+.ping-text {
+  font-size: 13px;
+  background: var(--void);
+  border: 2px solid var(--ion);
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.download-target-ping.docked .ping-core {
+  border-color: var(--moss);
+  color: var(--moss);
+  background: var(--void);
+  box-shadow: 0 0 18px var(--moss);
+}
+
+.download-target-ping.docked .ping-text {
+  border-color: var(--moss);
+  color: var(--moss);
+}
+
+@keyframes pingPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+.launching-active {
+  background: var(--regolith) !important;
+  border-color: var(--ion) !important;
+  color: var(--ion) !important;
+  box-shadow: 0 0 12px rgba(79, 211, 230, 0.5) !important;
+}
+
+.launch-delivered {
+  background: var(--moss) !important;
+  border-color: var(--bone) !important;
+  color: var(--void) !important;
+  box-shadow: 0 0 16px rgba(111, 191, 106, 0.7) !important;
+}
+
+/* ============================================================
+   Hyperspace / Warp Launch To External Pages
+   ============================================================ */
+.warp-launch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  background: var(--void);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.warp-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.warp-hud {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+  width: 90%;
+  pointer-events: none;
+}
+
+.warp-frame {
+  background: rgba(23, 27, 51, 0.9);
+  border: 4px solid var(--ion);
+  box-shadow: 0 0 28px rgba(79, 211, 230, 0.4), inset 0 0 16px rgba(79, 211, 230, 0.2);
+  padding: 24px;
+  font-family: var(--font-pixel);
+  color: var(--bone);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.warp-tag {
+  font-size: 14px;
+  color: var(--ion);
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+.warp-dest {
+  font-size: 20px;
+  text-align: center;
+  margin: 4px 0;
+}
+
+.dest-name {
+  color: var(--ore);
+  text-shadow: 0 0 8px var(--ore);
+}
+
+.warp-track {
+  width: 100%;
+  height: 16px;
+  background: var(--void);
+  border: 3px solid var(--bone);
+  overflow: hidden;
+  box-shadow: inset 2px 2px 0 var(--regolith);
+}
+
+.warp-fill {
+  width: 0%;
+  height: 100%;
+  background: var(--ion);
+  box-shadow: 0 0 12px var(--ion);
+  transition: width 0.05s linear;
+}
+
+.warp-telemetry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--bone);
+}
+
+.warp-pct {
+  color: var(--ion);
+  font-weight: 600;
+}
+
+.warp-flash {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ============================================================
+   Comprehensive Mobile & Tablet Responsiveness
+   ============================================================ */
+@media (max-width: 600px) {
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+  .ore-grid {
+    grid-template-columns: 1fr;
+  }
+  .quest-entry {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+  .beacon-cta {
+    gap: 10px;
+  }
+  .beacon-btn {
+    font-size: 15px;
+    padding: 12px 16px;
+    width: 100%;
+  }
+  .beacon-options {
+    flex-direction: column;
+  }
+  .beacon-sub-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  .beacon-links {
+    flex-direction: column;
+  }
+  .beacon-links .btn {
+    width: 100%;
+    text-align: center;
+  }
+  .mission-hud {
+    right: 10px;
+    bottom: 10px;
+    gap: 6px;
+  }
+  .hud-status {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+  .hud-progress {
+    width: 140px;
+    height: 8px;
+  }
+  .mission-hud .skip-hint {
+    font-size: 12px;
+    padding: 3px 8px;
+  }
+  .loader-terminal {
+    width: 95%;
+  }
+  .loader-body {
+    padding: 12px;
+  }
+  .loader-manifest {
+    font-size: 12px;
+    padding: 10px;
+  }
+  .loader-console {
+    font-size: 11px;
+    min-height: 80px;
+    padding: 10px;
+  }
+  .project-modal {
+    width: 95%;
+  }
+  .modal-content {
+    padding: 18px 14px;
+  }
+  .modal-content h2 {
+    font-size: 22px;
+  }
+  .modal-actions {
+    flex-direction: column;
+  }
+  .modal-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+  .warp-frame {
+    padding: 16px 14px;
+  }
+  .warp-dest {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero {
+    padding-left: 36px;
+    padding-right: 10px;
+  }
+  .layer {
+    padding-left: 36px;
+    padding-right: 10px;
+  }
+  .panel {
+    padding: 16px 12px;
+  }
+  .panel h2 {
+    font-size: 22px;
+  }
+  .hotbar-slots {
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 6px;
+  }
+  .slot {
+    height: 48px;
+    padding: 2px;
+  }
+  .slot-item {
+    font-size: 10px;
+  }
+  .slot-count {
+    font-size: 10px;
+  }
+}
+
+
