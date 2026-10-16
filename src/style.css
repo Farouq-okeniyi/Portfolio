@@ -79,6 +79,7 @@ main {
 
 .hero-copy {
   max-width: 34rem;
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 h1 {
@@ -188,6 +189,18 @@ html.intro {
   overflow: hidden;
 }
 
+/* Hide hero text, action buttons, and depth gauge during launch and landing so the 3D cinematic animation is completely unobstructed */
+html.intro .hero-copy {
+  opacity: 0;
+  transform: translateY(24px);
+  pointer-events: none;
+}
+
+html.intro .gauge {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Depth gauge: the real navigation. Fixed on the right on desktop, left edge on mobile. */
 .gauge {
   position: fixed;
@@ -198,6 +211,7 @@ html.intro {
   font-family: var(--font-pixel);
   font-size: 16px;
   line-height: 1.2;
+  transition: opacity 0.5s ease;
 }
 
 .gauge-depth {
